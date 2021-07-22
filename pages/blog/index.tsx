@@ -33,8 +33,8 @@ const Blog = ({ posts }) => {
  * fs and our CMS
  */
 
-export function getStaticProps() {
-  const cmsPosts = postsFromCMS.published.map((content) => {
+export function getStaticProps(ctx) {
+  const cmsPosts = postsFromCMS[ctx.preview ? 'draft' : 'published'].map((content) => {
     const { data } = matter(content)
     return data
   })

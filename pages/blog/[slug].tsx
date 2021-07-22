@@ -71,13 +71,13 @@ export function getStaticPaths() {
   }
 }
 
-export async function getStaticProps({ params }) {
+export async function getStaticProps({ params, preview }) {
   let post
   try {
     const filePath = path.join(process.cwd(), 'posts', params.slug + '.mdx')
     post = fs.readFileSync(filePath, 'utf-8')
   } catch (err) {
-    const cmsPosts = posts.published.map((p) => {
+    const cmsPosts = posts[preview ? 'draft' : 'published'].map((p) => {
       return matter(p)
     })
 
