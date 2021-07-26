@@ -3,7 +3,11 @@ import { Pane, Position, Avatar, Popover, Menu, LogOutIcon, majorScale, Text } f
 import { signOut } from 'next-auth/client'
 import { UserSession } from '../types'
 
-const User: FC<{ user: UserSession }> = ({ user }) => {
+const User: FC<{ user: any }> = ({ user }) => {
+  const handleSignOut = () => {
+    signOut()
+  }
+
   return (
     <Pane position="fixed" top={20} right={20}>
       <Popover
@@ -20,7 +24,7 @@ const User: FC<{ user: UserSession }> = ({ user }) => {
             </Pane>
             <Pane background="white">
               <Menu>
-                <Menu.Item icon={LogOutIcon} intent="danger" onSelect={signOut}>
+                <Menu.Item icon={LogOutIcon} intent="danger" onSelect={handleSignOut}>
                   Sign out
                 </Menu.Item>
               </Menu>

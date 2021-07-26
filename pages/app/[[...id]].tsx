@@ -8,6 +8,8 @@ import User from '../../components/user'
 import FolderPane from '../../components/folderPane'
 import DocPane from '../../components/docPane'
 import NewFolderDialog from '../../components/newFolderDialog'
+import { useSession, getSession } from 'next-auth/client'
+import { UserSession } from '../../types'
 
 const App: FC<{ folders?: any[]; activeFolder?: any; activeDoc?: any; activeDocs?: any[] }> = ({
   folders,
@@ -17,6 +19,11 @@ const App: FC<{ folders?: any[]; activeFolder?: any; activeDoc?: any; activeDocs
 }) => {
   const router = useRouter()
   const [newFolderIsShown, setIsShown] = useState(false)
+  const [session, loading] = useSession()
+
+  if (loading) {
+    return null
+  }
 
   const Page = () => {
     if (activeDoc) {
@@ -30,7 +37,7 @@ const App: FC<{ folders?: any[]; activeFolder?: any; activeDoc?: any; activeDocs
     return null
   }
 
-  if (false) {
+  if (!session && !loading) {
     return (
       <Dialog
         isShown
@@ -56,11 +63,11 @@ const App: FC<{ folders?: any[]; activeFolder?: any; activeDoc?: any; activeDocs
           <NewFolderButton onClick={() => setIsShown(true)} />
         </Pane>
         <Pane>
-          <FolderList folders={folders} />{' '}
+          <FolderList folders={[{ _id: '1', name: 'Hello' }]} />{' '}
         </Pane>
       </Pane>
       <Pane marginLeft={300} width="calc(100vw - 300px)" height="100vh" overflowY="auto" position="relative">
-        <User user={{}} />
+        <User user={session.user} />
         <Page />
       </Pane>
       <NewFolderDialog close={() => setIsShown(false)} isShown={newFolderIsShown} onNewFolder={() => {}} />
@@ -84,3 +91,10 @@ App.defaultProps = {
  * @param context
  */
 export default App
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context)
+  return {
+    props: { session },
+  }
+}
